@@ -249,4 +249,46 @@ iree_native_test(
 
 endif()
 
+if(IREE_HAL_DRIVER_D3D12 AND IREE_TARGET_BACKEND_D3D12_SPIRV)
+
+iree_cc_binary(
+  NAME
+    simple_embedding_d3d12
+  SRCS
+    "device_d3d12.c"
+    "simple_embedding.c"
+  DEPS
+    ::simple_embedding_test_bytecode_module_d3d12_c
+    iree::base
+    iree::hal
+    iree::experimental::d3d12::registration
+    iree::modules::hal
+    iree::vm
+    iree::vm::bytecode_module
+)
+
+iree_bytecode_module(
+  NAME
+    simple_embedding_test_bytecode_module_d3d12
+  SRC
+    "simple_embedding_test.mlir"
+  C_IDENTIFIER
+    "iree_samples_simple_embedding_test_module_d3d12"
+  FLAGS
+    "--iree-hal-target-backends=d3d12-spirv"
+    "--iree-llvm-debug-symbols=false"
+  PUBLIC
+)
+
+iree_native_test(
+  NAME
+    "simple_embedding_d3d12_test"
+  SRC
+    ::simple_embedding_d3d12
+  LABELS
+    "driver=d3d12"
+)
+
+endif()
+
 ### BAZEL_TO_CMAKE_PRESERVES_ALL_CONTENT_BELOW_THIS_LINE ###

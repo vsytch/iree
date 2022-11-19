@@ -62,6 +62,9 @@ macro(iree_set_llvm_cmake_options)
 
   # Configure LLVM based on enabled IREE target backends.
   message(STATUS "IREE compiler target backends:")
+  if(IREE_TARGET_BACKEND_D3D12_SPIRV)
+    message(STATUS "  - d3d12-spirv")
+  endif()
   if(IREE_TARGET_BACKEND_CUDA)
     message(STATUS "  - cuda")
     list(APPEND LLVM_TARGETS_TO_BUILD NVPTX)
@@ -127,7 +130,7 @@ macro(iree_set_spirv_cross_cmake_options)
   set(SPIRV_CROSS_ENABLE_TESTS OFF CACHE BOOL "" FORCE)
   set(SPIRV_CROSS_SKIP_INSTALL ON CACHE BOOL "" FORCE)
 
-  set(SPIRV_CROSS_ENABLE_HLSL OFF CACHE BOOL "" FORCE)
+  set(SPIRV_CROSS_ENABLE_HLSL ON CACHE BOOL "" FORCE)
   set(SPIRV_CROSS_ENABLE_CPP OFF CACHE BOOL "" FORCE)
   set(SPIRV_CROSS_ENABLE_REFLECT OFF CACHE BOOL "" FORCE)
   set(SPIRV_CROSS_ENABLE_C_API OFF CACHE BOOL "" FORCE)

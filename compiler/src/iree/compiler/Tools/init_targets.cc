@@ -11,6 +11,9 @@
 #ifdef IREE_HAVE_CUDA_TARGET
 #include "iree/compiler/Dialect/HAL/Target/CUDA/CUDATarget.h"
 #endif  // IREE_HAVE_CUDA_TARGET
+#ifdef IREE_HAVE_D3D12SPIRV_TARGET
+#include "iree/compiler/Dialect/HAL/Target/D3D12SPIRV/D3D12SPIRVTarget.h"
+#endif  // IREE_HAVE_CUDA_TARGET
 #ifdef IREE_HAVE_LLVM_CPU_TARGET
 #include "iree/compiler/Dialect/HAL/Target/LLVM/LLVMCPUTarget.h"
 #endif  // IREE_HAVE_LLVM_CPU_TARGET
@@ -42,6 +45,9 @@ void registerHALTargetBackends() {
 
 #ifdef IREE_HAVE_CUDA_TARGET
     IREE::HAL::registerCUDATargetBackends();
+#endif  // IREE_HAVE_CUDA_TARGET
+#ifdef IREE_HAVE_D3D12SPIRV_TARGET
+    IREE::HAL::registerD3D12SPIRVTargetBackends();
 #endif  // IREE_HAVE_CUDA_TARGET
 #ifdef IREE_HAVE_LLVM_CPU_TARGET
     IREE::HAL::registerLLVMCPUTargetBackends(

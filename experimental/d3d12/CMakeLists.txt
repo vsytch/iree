@@ -1,0 +1,29 @@
+iree_add_all_subdirs()
+
+iree_cc_library(
+  NAME
+    d3d12
+  HDRS
+  SRCS
+    "allocator.cc"
+    "buffer.cc"
+    "command_buffer.cc"
+    "device.cc"
+    "driver.cc"
+    "event.cc"
+    "executable_cache.cc"
+    "executable.cc"
+    "pipeline_layout.cc"
+    "resource.cc"
+    "semaphore.cc"
+  DEPS
+    iree::base
+    iree::base::core_headers
+    iree::experimental::d3d12::util::status
+    iree::hal
+    iree::schemas::d3d12_executable_def_c_fbs
+    dxgi.lib
+    dxguid.lib
+    D3D12.lib
+  PUBLIC
+)

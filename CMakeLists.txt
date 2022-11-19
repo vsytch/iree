@@ -118,10 +118,16 @@ else()
   set(IREE_HAL_DRIVER_VULKAN_DEFAULT ${IREE_HAL_DRIVER_DEFAULTS})
 endif()
 
+# D3D is Windows specific
+if(WIN32)
+  set(IREE_HAL_DRIVER_D3D12_DEFAULT ON)
+endif()
+
 option(IREE_HAL_DRIVER_CUDA "Enables the 'cuda' runtime HAL driver" ${IREE_HAL_DRIVER_CUDA_DEFAULT})
 option(IREE_HAL_DRIVER_LOCAL_SYNC "Enables the 'local-sync' runtime HAL driver" ${IREE_HAL_DRIVER_DEFAULTS})
 option(IREE_HAL_DRIVER_LOCAL_TASK "Enables the 'local-task' runtime HAL driver" ${IREE_HAL_DRIVER_DEFAULTS})
 option(IREE_HAL_DRIVER_VULKAN "Enables the 'vulkan' runtime HAL driver" ${IREE_HAL_DRIVER_VULKAN_DEFAULT})
+option(IREE_HAL_DRIVER_D3D12 "Enables the 'd3d12' runtime HAL driver" ${IREE_HAL_DRIVER_D3D12_DEFAULT})
 
 option(IREE_HAL_EXECUTABLE_LOADER_DEFAULTS "Sets the default value for all runtime HAL executable loaders" ON)
 set(IREE_HAL_EXECUTABLE_LOADER_EMBEDDED_ELF_DEFAULT ${IREE_HAL_EXECUTABLE_LOADER_DEFAULTS})
@@ -162,6 +168,9 @@ message(STATUS "IREE HAL drivers:")
 if(IREE_HAL_DRIVER_CUDA)
   message(STATUS "  - cuda")
 endif()
+if(IREE_HAL_DRIVER_D3D12)
+  message(STATUS "  - d3d12")
+endif()
 if(IREE_HAL_DRIVER_LOCAL_SYNC)
   message(STATUS "  - local-sync")
 endif()
@@ -196,6 +205,15 @@ set(IREE_EXTERNAL_ROCM_HAL_DRIVER_TARGET "iree::experimental::rocm::registration
 set(IREE_EXTERNAL_ROCM_HAL_DRIVER_REGISTER "iree_hal_rocm_driver_module_register")
 
 #-------------------------------------------------------------------------------
+# Experimental D3D12 HAL driver
+#-------------------------------------------------------------------------------
+
+set(IREE_EXTERNAL_D3D12_HAL_DRIVER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/experimental/d3d12")
+set(IREE_EXTERNAL_D3D12_HAL_DRIVER_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/experimental/d3d12")
+set(IREE_EXTERNAL_D3D12_HAL_DRIVER_TARGET "iree::experimental::d3d12::registration")
+set(IREE_EXTERNAL_D3D12_HAL_DRIVER_REGISTER "iree_hal_d3d12_driver_module_register")
+
+#-------------------------------------------------------------------------------
 # Compiler Target Options
 # By default, all compiler targets supported by the current platform which do
 # not require external deps are enabled by default. This can be changed with:
@@ -217,6 +235,7 @@ cmake_dependent_option(IREE_TARGET_BACKEND_VULKAN_SPIRV "Enables the 'vulkan-spi
 # experimental/niche in some fashion.
 cmake_dependent_option(IREE_TARGET_BACKEND_CUDA "Enables the 'cuda' compiler target backend" OFF ${IREE_BUILD_COMPILER} OFF)
 cmake_dependent_option(IREE_TARGET_BACKEND_ROCM "Enables the 'rocm' compiler target backend" OFF ${IREE_BUILD_COMPILER} OFF)
+cmake_dependent_option(IREE_TARGET_BACKEND_D3D12_SPIRV "Enables the 'd3d12' compiler target backend" ON ${IREE_BUILD_COMPILER} OFF)
 # Disable WebGPU by default - it has complex deps and is under development.
 cmake_dependent_option(IREE_TARGET_BACKEND_WEBGPU "Enables the 'webgpu' compiler target backend" OFF ${IREE_BUILD_COMPILER} OFF)
 
@@ -644,7 +663,7 @@ if(IREE_BUILD_PYTHON_BINDINGS)
   endif()
 endif()
 
-if(IREE_TARGET_BACKEND_METAL_SPIRV)
+if(IREE_TARGET_BACKEND_METAL_SPIRV OR IREE_TARGET_BACKEND_D3D12_SPIRV)
   iree_set_spirv_cross_cmake_options()
   # SPIRV-Cross is needed to cross compile SPIR-V into MSL source code.
   add_subdirectory(third_party/spirv_cross EXCLUDE_FROM_ALL)

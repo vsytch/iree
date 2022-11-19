@@ -44,3 +44,6 @@
 [submodule "third_party/musl"]
 	path = third_party/musl
 	url = https://github.com/powderluv/musl.git
+[submodule "third_party/d3d12_headers"]
+	path = third_party/d3d12_headers
+	url = https://github.com/microsoft/DirectX-Headers.git
